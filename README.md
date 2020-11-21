@@ -12,12 +12,12 @@
 - [Install](#install)
 - [Why?](#why)
 - [Contributing](#contributing)
+- [Contributors](#contributors)
 - [License](#license)
 
 # Dependencies
 
-- `bash`, `curl`, `tar`: generic POSIX utilities.
-- `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
+- `bash`, `curl`, `zip`: generic POSIX utilities.
 
 # Install
 
@@ -52,8 +52,8 @@ install & manage versions.
 
 Contributions of any kind welcome! See the [contributing guide](contributing.md).
 
-[Thanks goes to these contributors](https://github.com/comdotlinux/asdf-loki-logcli/graphs/contributors)!
+[Thanks goes to these contributors](https://github.com/comdotlinux/asdf-loki-logcli#contributors)!
 
 # License
 
-See [LICENSE](LICENSE) © [GuruprasadKulkarni](https://github.com/comdotlinux/)
+See [LICENSE](LICENSE) © [GuruprasadKulkarni](https://github.com/comdotlinux)

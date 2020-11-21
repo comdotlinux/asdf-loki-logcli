@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -x
 
 set -euo pipefail
 
@@ -34,38 +34,54 @@ list_all_versions() {
   list_github_tags
 }
 
+
+# https://github.com/grafana/loki/releases/download/v2.0.0/logcli-linux-amd64.zip
+
 download_release() {
-  local version filename url
+  local version filename url download_path
   version="$1"
   filename="$2"
+  download_path="$3"
 
   # TODO: Adapt the release URL convention for loki-logcli
-  url="$GH_REPO/archive/v${version}.tar.gz"
+  url="$GH_REPO/releases/download/v${version}/${filename}"
 
   echo "* Downloading loki-logcli release $version..."
-  curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
+  curl "${curl_opts[@]}" -o "${download_path}/$filename" -C - "$url" || fail "Could not download $url"
 }
 
 install_version() {
   local install_type="$1"
   local version="$2"
   local install_path="$3"
+  # Added Platform detection
+  local platform=$(uname | tr '[:upper:]' '[:lower:]')
+
+  # Added architecture detection
+  local architecture=""
+  case $(uname -m) in
+      i386)   architecture="386" ;;
+      i686)   architecture="386" ;;
+      x86_64) architecture="amd64" ;;
+      arm)    dpkg --print-architecture | grep -q "arm64" && architecture="arm64" || architecture="arm" ;;
+  esac
 
   if [ "$install_type" != "version" ]; then
     fail "asdf-loki-logcli supports release installs only"
   fi
 
-  # TODO: Adapt this to proper extension and adapt extracting strategy.
-  local release_file="$install_path/loki-logcli-$version.tar.gz"
+  # Adapted this to proper extension and adapt extracting strategy.
+  local release_filename="logcli-${platform}-${architecture}.zip"
+  local release_file="$install_path/${release_filename}"
   (
-    mkdir -p "$install_path"
-    download_release "$version" "$release_file"
-    tar -xzf "$release_file" -C "$install_path" --strip-components=1 || fail "Could not extract $release_file"
+    mkdir -p "$install_path/bin"
+    download_release "$version" "$release_filename" "$install_path"
+    unzip "$release_file" && mv -v logcli-${platform}-${architecture} "$install_path/bin/logcli" && chmod a+x "$install_path/bin/logcli" || fail "Could not extract $release_file"
     rm "$release_file"
 
-    # TODO: Asert loki-logcli executable exists.
+    # Assert loki-logcli executable exists.
     local tool_cmd
-    tool_cmd="$(echo "logcli --version" | cut -d' ' -f2-)"
+    tool_cmd="logcli"
     test -x "$install_path/bin/$tool_cmd" || fail "Expected $install_path/bin/$tool_cmd to be executable."
 
     echo "loki-logcli $version installation was successful!"
