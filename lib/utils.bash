@@ -34,9 +34,6 @@ list_all_versions() {
   list_github_tags
 }
 
-
-# https://github.com/grafana/loki/releases/download/v2.0.0/logcli-linux-amd64.zip
-
 download_release() {
   local version filename url download_path
   version="$1"
