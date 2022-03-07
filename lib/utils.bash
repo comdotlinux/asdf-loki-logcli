@@ -55,8 +55,8 @@ install_version() {
   local platform=$(uname | tr '[:upper:]' '[:lower:]')
 
   # Added architecture detection
-  local architecture=""
-  case $(uname -m) in
+  local architecture=$(uname -m)
+  case architecture in
     i386) architecture="386" ;;
     i686) architecture="386" ;;
     x86_64) architecture="amd64" ;;
