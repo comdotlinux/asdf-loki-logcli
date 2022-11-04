@@ -55,14 +55,17 @@ install_version() {
   local platform=$(uname | tr '[:upper:]' '[:lower:]')
 
   # Added architecture detection
-  local architecture=$(uname -m)
-  case architecture in
+  local architecture=""
+  case $(uname -m) in
     i386) architecture="386" ;;
     i686) architecture="386" ;;
     x86_64) architecture="amd64" ;;
     armv*) architecture="arm" ;;
     aarch64) architecture="arm64" ;;
   esac
+  if [ "x${architecture}" = "x" ] ; then
+    architecture="$(uname -m)" ;
+  fi
 
   if [ "$install_type" != "version" ]; then
     fail "asdf-loki-logcli supports release installs only"
