@@ -63,8 +63,8 @@ install_version() {
     armv*) architecture="arm" ;;
     aarch64) architecture="arm64" ;;
   esac
-  if [ "x${architecture}" = "x" ] ; then
-    architecture="$(uname -m)" ;
+  if [ "x${architecture}" = "x" ]; then
+    architecture="$(uname -m)"
   fi
 
   if [ "$install_type" != "version" ]; then
